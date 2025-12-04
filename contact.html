@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOCUSTY</title>
+  <meta name="description" content="contact page">
+  
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <script>
+    // 새로고침 시 맨 위로
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) window.scrollTo(0, 0);
+    });
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.scrollTo(0, 0); }, 0);
+    });
+  </script>
+  
+  <style>
+    /* Mobile only line break */
+    .br-mobile {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .br-mobile {
+        display: inline;
+      }
+    }
+    
+    /* Marquee */
+    .marquee-wrap {
+      overflow: hidden;
+      padding: clamp(100px, 12vh, 140px) 0 clamp(40px, 5vh, 60px);
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .marquee {
+      display: flex;
+      gap: 48px;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+    
+    .marquee span {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 700;
+      white-space: nowrap;
+      color: var(--text-primary);
+    }
+    
+    .marquee span.accent {
+      color: var(--accent);
+    }
+    
+    .marquee span.outline {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--text-muted);
+    }
+    
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    
+    
+    /* Contact Hero */
+    .contact-hero {
+      padding: clamp(40px, 6vh, 80px) 0;
+      text-align: center;
+    }
+    
+    .contact-hero h3 {
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: 500;
+      color: var(--text-muted);
+      margin: 0;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.3s;
+    }
+    
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Profile Section */
+    .profiles-section {
+      padding: clamp(60px, 10vh, 120px) 0;
+    }
+    
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    @media (max-width: 768px) {
+      .profiles-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+    
+    /* Flip Card */
+    .flip-card {
+      perspective: 1000px;
+      height: 280px;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 0.8s ease forwards;
+    }
+    
+    .flip-card:nth-child(1) { animation-delay: 0.4s; }
+    .flip-card:nth-child(2) { animation-delay: 0.6s; }
+    
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    
+    .flip-card.is-flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(24px, 3vw, 36px);
+      text-align: center;
+    }
+    
+    .flip-card-front {
+      background: var(--bg-secondary);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .flip-card:hover .flip-card-front {
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .flip-card-front h3 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    
+    .flip-card-front .role {
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin: 0 0 20px;
+    }
+    
+    .flip-card-front .flip-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+    
+    .flip-card-back {
+      background: var(--bg-elevated);
+      transform: rotateY(180deg);
+      justify-content: flex-start;
+      padding-top: clamp(28px, 4vw, 40px);
+    }
+    
+    .flip-card-back h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 12px;
+      color: var(--accent);
+    }
+    
+    .flip-card-back .tasks {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin: 0 0 16px;
+    }
+    
+    .flip-card-back .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    
+    .flip-card-back .contact-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    
+    .flip-card-back .contact-links a:hover {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+    
+    .flip-card-back .flip-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+      margin-top: auto;
+    }
+    
+    /* Greetings Section */
+    .greetings-section {
+      padding: clamp(60px, 10vh, 100px) 0;
+    }
+    
+    .greetings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(24px, 4vw, 48px);
+    }
+    
+    @media (max-width: 768px) {
+      .greetings-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+    
+    .greeting-card {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s ease forwards;
+    }
+    
+    .greeting-card:nth-child(1) { animation-delay: 0.3s; }
+    .greeting-card:nth-child(2) { animation-delay: 0.5s; }
+    
+    .greeting-card .name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .greeting-card .name::before {
+      content: '';
+      width: 12px;
+      height: 2px;
+      background: var(--accent);
+    }
+    
+    .greeting-card .message {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin: 0;
+      word-break: keep-all;
+    }
+    
+    /* Venue Section */
+    .venue-section {
+      padding: clamp(60px, 10vh, 120px) 0;
+      border-top: 1px solid var(--line);
+    }
+    
+    .venue-header {
+      text-align: center;
+      margin-bottom: clamp(40px, 6vh, 60px);
+    }
+    
+    .venue-header h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      margin: 0 0 8px;
+    }
+    
+    .venue-header p {
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    .venue-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+    
+    @media (max-width: 768px) {
+      .venue-content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .venue-info-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      padding: clamp(24px, 3vw, 32px);
+    }
+    
+    .venue-info-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 16px;
+      color: var(--accent);
+    }
+    
+    .venue-info-card p {
+      margin: 0 0 12px;
+      line-height: 1.7;
+    }
+    
+    .venue-info-card p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .venue-info-card .info-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    
+    .venue-map {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    
+    .venue-map iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 280px;
+      border: 0;
+      display: block;
+    }
+    
+    /* Poster Link */
+    .poster-link {
+      display: inline-block;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    
+    .poster-link:hover {
+      color: var(--accent);
+    }
+    
+    /* Poster Modal */
+    .poster-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      padding: 24px;
+    }
+    
+    .poster-modal.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .poster-modal img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .poster-modal.is-open img {
+      transform: scale(1);
+    }
+    
+    .poster-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+    
+    .poster-modal-close:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="index.html">
+        <img src="assets/img/logo/focusty-logo-dark-point.svg" alt="Focusty">
+      </a>
+
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle" aria-label="메뉴 열기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </label>
+
+      <nav class="nav" id="site-nav">
+        <a href="about.html">집중해요</a>
+        <a href="use.html">사용해요</a>
+        <a href="contact.html" class="is-active">연락해요</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Marquee Section -->
+    <section class="marquee-wrap">
+      <div class="marquee">
+        <span>FOCUSTY</span>
+        <span class="outline">포커스티</span>
+        <span class="accent">✦</span>
+        <span>DESIGNER</span>
+        <span class="outline">디자이너</span>
+        <span class="accent">✦</span>
+        <span>GIMBOMI</span>
+        <span class="outline">김보미</span>
+        <span class="accent">✦</span>
+        <span>LIMHEEWON</span>
+        <span class="outline">임희원</span>
+        <span class="accent">✦</span>
+      </div>
+    </section>
+    
+    <!-- Hero Section -->
+    <section class="contact-hero">
+      <div class="container">
+        <h3>포커스티의 디자이너들을 소개합니다. ✧⁺⸜(  •⌄•  )⸝⁺✧</h3>
+      </div>
+    </section>
+
+    <!-- Profiles Section -->
+    <section class="profiles-section">
+      <div class="container">
+        <div class="profiles-grid">
+          <!-- 김보미 -->
+          <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <h3>김보미</h3>
+                <p class="role">프로젝트 기획 · UX/UI 디자인</p>
+                <span class="flip-hint">Click!</span>
+              </div>
+              <div class="flip-card-back">
+                <h4>٩( ᐢ-ᐢ )و</h4>
+                <p class="tasks">
+                  프로젝트 총괄 · UX 전략 설계<br>
+                  캐릭터 스토리텔링 · 로고 디자인 · <br class="br-mobile">웹/앱 UX/UI
+                </p>
+                <div class="contact-links">
+                  <a href="https://instagram.com/gim.bo.mi" target="_blank" onclick="event.stopPropagation()">@gim.bo.mi</a>
+                  <a href="mailto:gim.bomi@outlook.com" onclick="event.stopPropagation()">gim.bomi@outlook.com</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 임희원 -->
+          <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <h3>임희원</h3>
+                <p class="role">브랜딩 · 비주얼 디자인</p>
+                <span class="flip-hint">Click!</span>
+              </div>
+              <div class="flip-card-back">
+                <h4>(๑˙ ▿ ˙๑)</h4>
+                <p class="tasks">
+                  IoT 디바이스 제작 · 3D 모델링/프린팅<br>
+                  캐릭터 디자인 · 브랜드 디자인 · <br class="br-mobile">영상/굿즈/패키지 디자인
+                </p>
+                <div class="contact-links">
+                  <a href="https://instagram.com/hwww.design.co.krd" target="_blank" onclick="event.stopPropagation()">@hwww.design.co.kr</a>
+                  <a href="mailto:heewww.design@gmail.com" onclick="event.stopPropagation()">heewww.design@gmail.com</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Greetings Section -->
+    <section class="greetings-section">
+      <div class="container">
+        <div class="greetings-grid">
+          <div class="greeting-card">
+            <p class="name">김보미</p>
+            <p class="message">
+              길고 길었던 학과 생활을 잘 마무리할 수 있게 되어 기쁩니다. 디자인 조형학부로 입학하여 우리 학과의 개설을 함께하고, 휴학 기간 동안 다양한 경험을 하며 얻은 인사이트들이 <br class="br-mobile">본 프로젝트로 잘 마무리되었다고 생각합니다.<br><br>
+              때로는 연관이 없다고 생각했던 것들이 서로 영향을 줌으로써 새로운 결과물로 제작되는 것 같습니다. 언젠가 또 의미 있다고 느낄 순간을 위해 앞으로도 열심히 하겠습니다. 감사합니다.
+            </p>
+          </div>
+          <div class="greeting-card">
+            <p class="name">임희원</p>
+            <p class="message">
+              인생에서 가장 주체적으로 살아온 대학생 4년이 이렇게 마무리되었습니다. <br class="br-mobile">때로는 뿌연 안개 속을 걷는 듯, 목적지를 <br class="br-mobile">알 수 없어 두렵던 순간들도 있었지만, 저 멀리 희미하게 빛나던 한 줄기 빛을 믿고 숨 가쁘게 달려온 결과, 졸업전시라는 소중한 빛을 얻게 되었습니다.<br><br>
+              이 시간들은 앞으로 살아가면서 정말 필요할, 값진 기억일 듯 합니다. 첫 스텝을 힘차게 밟았고, 이제 또 다음 반짝이는 빛을 향해 거침없이 나아가겠습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Venue Section -->
+    <section class="venue-section">
+      <div class="container">
+        <div class="venue-header">
+          <h2>전시관 안내</h2>
+          <p>Exhibition Info</p>
+        </div>
+        
+        <div class="venue-content">
+          <div class="venue-info-card">
+            <h3>📍 전시관 위치</h3>
+            <p>
+              충청북도 청주시 청원구 덕벌로 30<br>
+              동부학교 6동
+            </p>
+            
+            <h3 style="margin-top: 24px;">🕐 전시 기간 & 운영 시간</h3>
+            <p>
+              2025년 12월 12일(금) ~ 15일(월)<br>
+              오전 10시 – 오후 5시
+            </p>
+            
+            <h3 style="margin-top: 24px;">📞 전시관 연락처</h3>
+            <p>043-715-6861</p>
+            
+            <span class="poster-link" id="open-poster">졸업전시 포스터 보기</span>
+          </div>
+          
+          <div class="venue-map">
+            <iframe
+              src="https://www.google.com/maps?q=충북%20청주시%20청원구%20덕벌로%2030&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+              title="전시장 위치 지도">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 Focusty. Gim,Bomi & Lim,Heewon. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Poster Modal -->
+  <div class="poster-modal" id="poster-modal">
+    <button class="poster-modal-close" id="close-poster">&times;</button>
+    <img src="assets/img/DMD_5th_poster_RGB.png" alt="DMD 5th 졸업전시 포스터">
+  </div>
+
+  <script>
+    // Poster Modal
+    const posterModal = document.getElementById('poster-modal');
+    const openPoster = document.getElementById('open-poster');
+    const closePoster = document.getElementById('close-poster');
+
+    openPoster.addEventListener('click', () => {
+      posterModal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closePoster.addEventListener('click', () => {
+      posterModal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    });
+
+    posterModal.addEventListener('click', (e) => {
+      if (e.target === posterModal) {
+        posterModal.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && posterModal.classList.contains('is-open')) {
+        posterModal.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>

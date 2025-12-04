@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOCUSTY</title>
+  <meta name="description" content="포커스티 프렌즈를 만나보세요. 야나, 솔, 비스의 이야기">
+  
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <style>
+    /* Prevent layout shift */
+    html {
+      overflow-x: hidden;
+    }
+    
+    body {
+      overflow-x: hidden;
+      max-width: 100vw;
+    }
+    
+    /* Character Hero */
+    .char-hero {
+      padding: clamp(100px, 15vh, 140px) 0 clamp(40px, 6vh, 60px);
+    }
+    
+    .char-hero-content {
+      text-align: center;
+      margin-bottom: clamp(40px, 6vh, 60px);
+    }
+    
+    .char-hero-content h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    
+    .char-hero-content h1 span {
+      color: var(--accent);
+    }
+    
+    .char-hero-image {
+      width: 100%;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    
+    .char-hero-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Character Detail Section */
+    .char-detail {
+      padding: clamp(60px, 10vh, 100px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .char-detail:last-of-type {
+      border-bottom: none;
+    }
+    
+    .char-detail-content {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: clamp(40px, 6vw, 80px);
+      align-items: stretch;
+    }
+    
+    /* Left: Profile */
+    .char-profile {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .char-profile img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-lg);
+      display: block;
+      margin-bottom: 20px;
+    }
+    
+    .char-profile h2 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    
+    .char-profile h2 span {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 0.5em;
+      margin-left: 10px;
+    }
+    
+    /* Keyword Tags */
+    .char-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 8px;
+    }
+    
+    .char-tags span {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(255, 245, 24, 0.1);
+      border: 1px solid rgba(255, 245, 24, 0.25);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 100px;
+      transition: border-color 0.2s ease;
+    }
+    
+    .char-tags span:hover {
+      border-color: rgba(255, 245, 24, 0.6);
+    }
+    
+    /* Right: Gallery */
+    .char-gallery {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .char-gallery-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .char-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+    
+    .char-gallery-item {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      aspect-ratio: 3/4;
+    }
+    
+    .char-gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Character Showcase Carousel */
+    .char-showcase {
+      padding: clamp(60px, 10vh, 100px) 0;
+      overflow: hidden;
+    }
+    
+    .showcase-wrapper {
+      position: relative;
+      max-width: 70%;
+      margin: 0 auto;
+      padding: 0 70px;
+    }
+    
+    .showcase-carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      cursor: grab;
+    }
+    
+    .showcase-carousel:active {
+      cursor: grabbing;
+    }
+    
+    .showcase-carousel::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .showcase-item {
+      flex: 0 0 100%;
+      scroll-snap-align: center;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .showcase-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Arrows */
+    .showcase-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    .showcase-arrow:hover {
+      background: var(--accent);
+    }
+    
+    .showcase-arrow:hover svg {
+      stroke: var(--bg-dark);
+    }
+    
+    .showcase-arrow svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--text-primary);
+      stroke-width: 2;
+      fill: none;
+    }
+    
+    .showcase-arrow.prev {
+      left: 0;
+    }
+    
+    .showcase-arrow.next {
+      right: 0;
+    }
+    
+    /* Dots */
+    .showcase-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .showcase-dots .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: var(--line);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .showcase-dots .dot.active {
+      background: var(--accent);
+      transform: scale(1.2);
+    }
+    
+    .showcase-dots .dot:hover {
+      background: var(--text-muted);
+    }
+    
+    @media (max-width: 900px) {
+      .showcase-wrapper {
+        max-width: 90%;
+      }
+      
+      .showcase-arrow {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .showcase-arrow.prev {
+        left: 0;
+      }
+      
+      .showcase-arrow.next {
+        right: 0;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .showcase-wrapper {
+        max-width: 100%;
+        padding: 0 50px;
+      }
+      
+      .showcase-arrow {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .showcase-arrow.prev {
+        left: 0;
+      }
+      
+      .showcase-arrow.next {
+        right: 0;
+      }
+    }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+      .char-detail-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      
+      .char-profile {
+        max-width: 240px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      
+      .char-tags {
+        justify-content: center;
+      }
+      
+      .char-gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="index.html">
+        <img src="assets/img/logo/focusty-logo-dark-point.svg" alt="Focusty">
+      </a>
+
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle" aria-label="메뉴 열기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </label>
+
+      <nav class="nav" id="site-nav">
+        <a href="about.html">집중해요</a>
+        <a href="use.html">사용해요</a>
+        <a href="contact.html">연락해요</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="char-hero">
+      <div class="container">
+        <div class="char-hero-content">
+          <h1><span>포커스티 프렌즈</span>를<br>소개합니다</h1>
+        </div>
+        <div class="char-hero-image">
+          <img src="assets/img/ch-hero.jpg" alt="포커스티 프렌즈">
+        </div>
+      </div>
+    </section>
+
+    <!-- JANA -->
+    <section class="char-detail">
+      <div class="container">
+        <div class="char-detail-content">
+          <div class="char-profile">
+            <img src="assets/img/ch/doodle_JANA.png" alt="야나">
+            <h2>야나 <span>JANA</span></h2>
+            <div class="char-tags">
+              <span>#솔직한</span>
+              <span>#열정적인</span>
+              <span>#매력적인</span>
+              <span>#변덕쟁이</span>
+              <span>#응석받이</span>
+            </div>
+          </div>
+          <div class="char-gallery">
+            <p class="char-gallery-label">Gallery</p>
+            <div class="char-gallery-grid">
+              <div class="char-gallery-item"><img src="assets/img/ch/jana001.png" alt="야나 1"></div>
+              <div class="char-gallery-item"><img src="assets/img/ch/jana002.png" alt="야나 2"></div>
+              <div class="char-gallery-item"><img src="assets/img/ch/jana003.png" alt="야나 3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- SOL -->
+    <section class="char-detail">
+      <div class="container">
+        <div class="char-detail-content">
+          <div class="char-profile">
+            <img src="assets/img/ch/doodle_SOL.png" alt="솔">
+            <h2>솔 <span>SŌL</span></h2>
+            <div class="char-tags">
+              <span>#귀찮은</span>
+              <span>#무심한</span>
+              <span>#현실적인</span>
+              <span>#정이많은</span>
+              <span>#무덤덤한</span>
+            </div>
+          </div>
+          <div class="char-gallery">
+            <p class="char-gallery-label">Gallery</p>
+            <div class="char-gallery-grid">
+              <div class="char-gallery-item"><img src="assets/img/ch/sol001.png" alt="솔 1"></div>
+              <div class="char-gallery-item"><img src="assets/img/ch/sol002.png" alt="솔 2"></div>
+              <div class="char-gallery-item"><img src="assets/img/ch/sol003.png" alt="솔 3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- VIS -->
+    <section class="char-detail">
+      <div class="container">
+        <div class="char-detail-content">
+          <div class="char-profile">
+            <img src="assets/img/ch/doodle_VIS.png" alt="비스">
+            <h2>비스 <span>VIS</span></h2>
+            <div class="char-tags">
+              <span>#따뜻한</span>
+              <span>#눈물많은</span>
+              <span>#어리버리한</span>
+              <span>#상냥한</span>
+              <span>#용기있는</span>
+            </div>
+          </div>
+          <div class="char-gallery">
+            <p class="char-gallery-label">Gallery</p>
+            <div class="char-gallery-grid">
+              <div class="char-gallery-item"><img src="assets/img/ch/vis001.png" alt="비스 1"></div>
+              <div class="char-gallery-item"><img src="assets/img/ch/vis002.png" alt="비스 2"></div>
+              <div class="char-gallery-item"><img src="assets/img/ch/vis003.png" alt="비스 3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Character Showcase Carousel -->
+    <section class="char-showcase">
+      <div class="container">
+        <div class="showcase-wrapper">
+          <button class="showcase-arrow prev" id="prev-btn">
+            <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"></polyline></svg>
+          </button>
+          <div class="showcase-carousel" id="showcase-carousel">
+            <div class="showcase-item">
+              <img src="assets/img/ch/001.png" alt="캐릭터 쇼케이스 1">
+            </div>
+            <div class="showcase-item">
+              <img src="assets/img/ch/002.png" alt="캐릭터 쇼케이스 2">
+            </div>
+            <div class="showcase-item">
+              <img src="assets/img/ch/003.png" alt="캐릭터 쇼케이스 3">
+            </div>
+          </div>
+          <button class="showcase-arrow next" id="next-btn">
+            <svg viewBox="0 0 24 24"><polyline points="9,6 15,12 9,18"></polyline></svg>
+          </button>
+        </div>
+        <div class="showcase-dots">
+          <button class="dot active" data-index="0"></button>
+          <button class="dot" data-index="1"></button>
+          <button class="dot" data-index="2"></button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Carousel Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const carousel = document.getElementById('showcase-carousel');
+      const dots = document.querySelectorAll('.showcase-dots .dot');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const items = carousel.querySelectorAll('.showcase-item');
+      let currentIndex = 0;
+      let autoSlideInterval;
+      
+      // Drag variables
+      let isDragging = false;
+      let startX = 0;
+      let scrollLeft = 0;
+
+      function goToSlide(index) {
+        if (index < 0) index = items.length - 1;
+        if (index >= items.length) index = 0;
+        currentIndex = index;
+        carousel.scrollTo({
+          left: items[index].offsetLeft - carousel.offsetLeft,
+          behavior: 'smooth'
+        });
+        updateDots();
+      }
+
+      function updateDots() {
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
+      }
+
+      function nextSlide() {
+        goToSlide(currentIndex + 1);
+      }
+
+      function prevSlide() {
+        goToSlide(currentIndex - 1);
+      }
+
+      // Auto slide
+      function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 4000);
+      }
+
+      function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+      }
+
+      // Arrow buttons
+      prevBtn.addEventListener('click', () => {
+        stopAutoSlide();
+        prevSlide();
+        startAutoSlide();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        stopAutoSlide();
+        nextSlide();
+        startAutoSlide();
+      });
+
+      // Dot click
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          stopAutoSlide();
+          goToSlide(parseInt(dot.dataset.index));
+          startAutoSlide();
+        });
+      });
+
+      // Drag functionality
+      carousel.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+        stopAutoSlide();
+      });
+
+      carousel.addEventListener('mouseleave', () => {
+        if (isDragging) {
+          isDragging = false;
+          snapToNearest();
+        }
+        startAutoSlide();
+      });
+
+      carousel.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          snapToNearest();
+          startAutoSlide();
+        }
+      });
+
+      carousel.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
+      });
+
+      // Touch events
+      carousel.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+        stopAutoSlide();
+      });
+
+      carousel.addEventListener('touchend', () => {
+        isDragging = false;
+        snapToNearest();
+        startAutoSlide();
+      });
+
+      carousel.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const x = e.touches[0].pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
+      });
+
+      function snapToNearest() {
+        const itemWidth = items[0].offsetWidth;
+        const newIndex = Math.round(carousel.scrollLeft / itemWidth);
+        goToSlide(Math.max(0, Math.min(newIndex, items.length - 1)));
+      }
+
+      // Pause on hover (wrapper)
+      carousel.addEventListener('mouseenter', stopAutoSlide);
+
+      startAutoSlide();
+    });
+  </script>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 Focusty. Gim,Bomi &amp; Lim,Heewon. All Rights Reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

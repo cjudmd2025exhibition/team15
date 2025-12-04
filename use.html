@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOCUSTY</title>
+  <meta name="description" content="포커스티와 함께 집중하는 방법을 알아보세요.">
+  
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+  
+  <script>
+    // 새로고침 시 맨 위로
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) window.scrollTo(0, 0);
+    });
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.scrollTo(0, 0); }, 0);
+    });
+  </script>
+  
+  <style>
+    /* Header - Hidden by default, show on hover top area */
+    .site-header {
+      opacity: 0;
+      transform: translateY(-100%);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    
+    .site-header.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Dimmed Overlay */
+    .seq-dim {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    
+    .seq-dim.is-active {
+      opacity: 1;
+    }
+    
+    @media (max-width: 768px) {
+      .seq-dim {
+        opacity: 1;
+      }
+    }
+    
+    /* Mobile only line break */
+    .br-mobile {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .br-mobile {
+        display: inline;
+      }
+    }
+    
+    /* Sequence Text Overlay Styles - Dark Theme */
+    .seq-text-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .seq-text {
+      position: absolute;
+      max-width: 480px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .seq-text.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .seq-text h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 0 0 16px;
+      color: #f7f4ed;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .seq-text p {
+      font-size: clamp(14px, 1.5vw, 18px);
+      line-height: 1.7;
+      color: #e0ddd5;
+      margin: 0;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* 위치별 스타일 */
+    .seq-text.pos-left-top {
+      left: 8%;
+      top: 15%;
+    }
+    
+    .seq-text.pos-left-center {
+      left: 8%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .seq-text.pos-left-center.is-visible {
+      transform: translateY(-50%);
+    }
+    
+    .seq-text.pos-left-bottom {
+      left: 8%;
+      bottom: 15%;
+    }
+    
+    .seq-text.pos-right-top {
+      right: 8%;
+      top: 15%;
+      text-align: right;
+    }
+    
+    .seq-text.pos-right-center {
+      right: 8%;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: right;
+    }
+    
+    .seq-text.pos-right-center.is-visible {
+      transform: translateY(-50%);
+    }
+    
+    .seq-text.pos-right-bottom {
+      right: 8%;
+      bottom: 15%;
+      text-align: right;
+    }
+    
+    .seq-text.pos-center {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      max-width: 800px;
+      width: max-content;
+    }
+    
+    .seq-text.pos-center.is-visible {
+      transform: translate(-50%, -50%);
+    }
+
+    .seq-text.seq-finale {
+      max-width: none;
+      width: auto;
+    }
+    
+    .seq-text .step-num {
+      display: inline-block;
+      font-size: clamp(11px, 1vw, 13px);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #20323b;
+      background: #fff518;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .seq-finale {
+      text-align: center;
+    }
+    
+    .seq-finale .finale-sub {
+      font-family: "Pretendard Variable", "Pretendard", sans-serif;
+      font-size: clamp(14px, 1.8vw, 20px);
+      font-weight: 400;
+      color: #d4d0c7;
+      margin-bottom: 20px;
+    }
+    
+    .seq-finale .finale-sub strong {
+      font-weight: 600;
+      color: #f7f4ed;
+    }
+    
+    .seq-finale .finale-title {
+      font-family: "Pretendard Variable", "Pretendard", sans-serif;
+      font-size: clamp(32px, 5vw, 64px);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin: 0;
+    }
+    
+    .seq-finale .finale-title .accent {
+      color: #fff518;
+    }
+    
+    .seq-finale .finale-title .light {
+      font-weight: 200;
+      color: #f7f4ed;
+    }
+    
+    .seq-finale .finale-logo {
+      max-width: clamp(200px, 40vw, 400px);
+      height: auto;
+    }
+    
+    .seq-finale .finale-cta {
+      display: inline-block;
+      margin-top: 32px;
+      padding: 16px 40px;
+      font-size: 1rem;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+      .seq-text {
+        max-width: 90%;
+      }
+      
+      .seq-text h2 {
+        font-size: clamp(24px, 6vw, 36px);
+      }
+      
+      .seq-text p {
+        font-size: clamp(13px, 3.5vw, 16px);
+      }
+      
+      .seq-text.pos-left-center,
+      .seq-text.pos-right-center {
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      
+      .seq-text.pos-left-center.is-visible,
+      .seq-text.pos-right-center.is-visible {
+        transform: translate(-50%, -50%);
+      }
+      
+      .seq-finale .finale-title {
+        font-size: clamp(24px, 7vw, 40px);
+      }
+    }
+  </style>
+  
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.addEventListener('pageshow', function(e) {
+      if (e.persisted) window.scrollTo(0, 0);
+    });
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.scrollTo(0, 0); }, 0);
+    });
+  </script>
+</head>
+
+<body class="page-index page-use">
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="index.html">
+        <img src="assets/img/logo/focusty-logo-dark-point.svg" alt="Focusty">
+      </a>
+
+      <input type="checkbox" id="nav-check" class="nav-check" hidden>
+      <label for="nav-check" class="nav-toggle" aria-label="메뉴 열기">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </label>
+
+      <nav class="nav" id="site-nav">
+        <a href="about.html">집중해요</a>
+        <a href="use.html" class="is-active">사용해요</a>
+        <a href="contact.html">연락해요</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Image Sequence Section -->
+    <section id="use-visual">
+      <div class="sequence-container">
+        <canvas id="sequence-canvas"></canvas>
+        
+        <div class="seq-dim" id="seq-dim"></div>
+        
+        <div class="seq-text-layer">
+          <div class="seq-text pos-center" data-start="0" data-end="0.15" data-dim="true">
+            <h2><span style="color: var(--accent);">포커스티</span>와 함께<br>집중을 시작해요</h2>
+            <p>Focus with Honesty 2025</p>
+          </div>
+          
+          <div class="seq-text pos-left-center" data-start="0.18" data-end="0.35">
+            <span class="step-num">STEP 01</span>
+            <h2><span style="color: var(--accent);">스마트폰 NFC</span>로<br>학습을 시작<br class="br-mobile">하세요</h2>
+            <p>스마트폰 위에 <br class="br-mobile">포커스티를 올리고 <br class="br-mobile">버튼을 누르면<br>NFC 인식을 통해 <b>학습 시간 <br class="br-mobile">측정</b>이 시작됩니다.</p>
+          </div>
+          
+          <div class="seq-text pos-left-center" data-start="0.38" data-end="0.55">
+            <span class="step-num">STEP 02</span>
+            <h2>스마트폰을 들면<br><span style="color: var(--accent);">이탈 시간</span>이 <br class="br-mobile">기록돼요</h2>
+            <p>내장된 기울기 센서가 <br class="br-mobile">변화를 감지해<br>해당 시간을 <b>학습 이탈 시간</b>으로 기록합니다.</p>
+          </div>
+          
+          <div class="seq-text pos-right-center" data-start="0.58" data-end="0.78">
+            <span class="step-num">STEP 03</span>
+            <h2><span style="color: var(--accent);">나만의 리포트</span>를<br>확인하세요</h2>
+            <p>선택한 캐릭터에 따라 <br class="br-mobile"><strong>맞춤형 분석 그래프와<br>조언이 포함된 리포트</strong>를 <br class="br-mobile">받아보세요.</p>
+          </div>
+          
+          <div class="seq-text pos-center seq-finale" data-start="0.82" data-end="1" data-dim="true">
+            <p class="finale-sub">포커스티와 함께 <strong>순수 학습 <br class="br-mobile">시간</strong>을 확인해보세요.</p>
+            <img src="assets/img/logo/focusty-logo-dark-point.svg" alt="Focusty" class="finale-logo">
+            <a href="product.html" class="btn-primary finale-cta">제품 소개<br class="br-mobile"> 바로가기</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- Image Sequence Script -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const frameCount = 140;
+    const currentFrame = i => `assets/img/img_sequence/use_vis/${String(i).padStart(4, "0")}.webp`;
+
+    const canvas = document.getElementById("sequence-canvas");
+    const context = canvas.getContext("2d");
+    const images = [];
+    const imageSeq = { frame: 0 };
+
+    for (let i = 1; i <= frameCount; i++) {
+      const img = new Image();
+      img.src = currentFrame(i);
+      images.push(img);
+    }
+
+    images[0].onload = () => {
+      render();
+      initScroll();
+      initTextAnimations();
+    };
+
+    function initScroll() {
+      gsap.to(imageSeq, {
+        frame: frameCount - 1,
+        snap: "frame",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#use-visual",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+          pin: ".sequence-container",
+          pinSpacing: true,
+          anticipatePin: 1,
+        },
+        onUpdate: render,
+      });
+    }
+
+    function render() {
+      const index = Math.floor(imageSeq.frame);
+      const img = images[index];
+      if (!img || !img.complete) return;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = vw * dpr;
+      canvas.height = vh * dpr;
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      context.clearRect(0, 0, vw, vh);
+
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const viewRatio = vw / vh;
+
+      let drawWidth, drawHeight, offsetX, offsetY;
+
+      if (viewRatio > imgRatio) {
+        drawWidth = vw;
+        drawHeight = vw / imgRatio;
+        offsetX = 0;
+        offsetY = (vh - drawHeight) / 2;
+      } else {
+        drawHeight = vh;
+        drawWidth = vh * imgRatio;
+        offsetX = (vw - drawWidth) / 2;
+        offsetY = 0;
+      }
+
+      context.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    }
+
+    function initTextAnimations() {
+      const textElements = document.querySelectorAll('.seq-text');
+      const dimOverlay = document.getElementById('seq-dim');
+      
+      ScrollTrigger.create({
+        trigger: "#use-visual",
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+          const progress = self.progress;
+          let shouldDim = false;
+          
+          textElements.forEach(el => {
+            const start = parseFloat(el.dataset.start);
+            const end = parseFloat(el.dataset.end);
+            const needsDim = el.dataset.dim === 'true';
+            
+            if (progress >= start && progress <= end) {
+              el.classList.add('is-visible');
+              if (needsDim) shouldDim = true;
+            } else {
+              el.classList.remove('is-visible');
+            }
+          });
+          
+          if (shouldDim) {
+            dimOverlay.classList.add('is-active');
+          } else {
+            dimOverlay.classList.remove('is-active');
+          }
+        }
+      });
+    }
+  </script>
+
+  <!-- Header Visibility Script -->
+  <script>
+    (function() {
+      const header = document.querySelector('.site-header');
+      const hero = document.getElementById('use-visual');
+      if (!header || !hero) return;
+
+      header.classList.add('is-hidden');
+
+      let inHero = true;
+
+      const triggerZone = document.createElement('div');
+      triggerZone.style.cssText = 'position:fixed;top:0;left:0;right:0;height:80px;z-index:1199;';
+      document.body.appendChild(triggerZone);
+
+      triggerZone.addEventListener('mouseenter', () => {
+        if (inHero) {
+          header.classList.remove('is-hidden');
+          header.classList.add('is-solid');
+        }
+      });
+
+      header.addEventListener('mouseleave', () => {
+        if (inHero) {
+          header.classList.add('is-hidden');
+          header.classList.remove('is-solid');
+        }
+      });
+
+      const io = new IntersectionObserver(([entry]) => {
+        inHero = entry.isIntersecting;
+        if (!inHero) {
+          header.classList.remove('is-hidden');
+          header.classList.add('is-solid');
+        } else {
+          header.classList.add('is-hidden');
+          header.classList.remove('is-solid');
+        }
+      }, { threshold: 0.01 });
+      io.observe(hero);
+
+      // Header shows only on top hover
+      let headerTimeout;
+      window.addEventListener('mousemove', function(e) {
+        if (e.clientY <= 80) {
+          header.classList.add('is-visible');
+          clearTimeout(headerTimeout);
+        } else if (!header.matches(':hover')) {
+          headerTimeout = setTimeout(() => {
+            header.classList.remove('is-visible');
+          }, 300);
+        }
+      }, { passive: true });
+      
+      header.addEventListener('mouseenter', function() {
+        clearTimeout(headerTimeout);
+        header.classList.add('is-visible');
+      });
+      
+      header.addEventListener('mouseleave', function() {
+        headerTimeout = setTimeout(() => {
+          header.classList.remove('is-visible');
+        }, 300);
+      });
+    })();
+
+      </script>
+</body>
+</html>
